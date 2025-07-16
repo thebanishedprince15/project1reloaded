@@ -1,5 +1,5 @@
 import streamlit as st
-from brief_parser import parse_brief
+from brief_parser_cohere import parse_brief
 from gdrive_uploader import create_drive_folders
 
 st.set_page_config(page_title="Creative Brief Setup Agent", layout="centered")
