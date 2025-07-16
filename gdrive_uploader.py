@@ -1,24 +1,14 @@
-import os
-import pickle
+import streamlit as st
+from google.oauth2 import service_account
 from googleapiclient.discovery import build
-from google_auth_oauthlib.flow import InstalledAppFlow
-from google.auth.transport.requests import Request
 
 SCOPES = ['https://www.googleapis.com/auth/drive.file']
 
 def get_drive_service():
-    creds = None
-    if os.path.exists("token.json"):
-        with open("token.json", "rb") as token:
-            creds = pickle.load(token)
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
-            creds = flow.run_local_server(port=0)
-        with open("token.json", "wb") as token:
-            pickle.dump(creds, token)
+    creds_dict = st.secrets["google_service_account"]
+    creds = service_account.Credentials.from_service_account_info(
+        creds_dict, scopes=SCOPES
+    )
     return build("drive", "v3", credentials=creds)
 
 def create_drive_folders(deliverables, parent_name="Creative Brief Project"):
